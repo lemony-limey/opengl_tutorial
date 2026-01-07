@@ -7,6 +7,8 @@ add_executable(opengl_tutorial
         src/main.cpp
         src/config.hpp
         src/glad.c
+        src/triangle_mesh.cpp
+        src/triangle_mesh.hpp
 )
 
 # The executable needs the stuff in the "dependencies" directory

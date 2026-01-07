@@ -1,6 +1,8 @@
 #include <iostream>
+#include <memory>
 
 #include "config.hpp"
+#include "triangle_mesh.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 unsigned int make_shader_module(const std::string& filepath, unsigned int module_type);
@@ -43,6 +45,8 @@ int main()
     // glClearColor is a state-setting function
     glClearColor(0.25f, 0.5f, 0.75f, 1.0f);
 
+    std::unique_ptr<triangle_mesh> triangle = std::make_unique<triangle_mesh>();
+
     unsigned int shader;
     try
     {
@@ -64,6 +68,8 @@ int main()
 
         // glClear is a state-using function
         glClear(GL_COLOR_BUFFER_BIT);
+        glUseProgram(shader);
+        triangle->draw();
 
         glfwPollEvents();
         glfwSwapBuffers(window);
@@ -112,7 +118,7 @@ unsigned int make_shader_module(const std::string& filepath, unsigned int module
     {
         char errorLog[1024];
         glGetShaderInfoLog(shaderModule, 1024, nullptr, errorLog);
-        std::cout << "Shader Module compilation error: \n" << errorLog << std::endl;
+        std::cout << "ERROR: Shader Module compilation error: \n" << errorLog << std::endl;
         throw std::runtime_error("Oof");
     }
 
@@ -120,7 +126,7 @@ unsigned int make_shader_module(const std::string& filepath, unsigned int module
 }
 
 
-//
+// Links two shader modules together to create a shader program.
 unsigned int make_shader_program(const std::string& vertex_filepath, const std::string& fragment_filepath)
 {
     std::vector<unsigned int> modules;
@@ -142,7 +148,7 @@ unsigned int make_shader_program(const std::string& vertex_filepath, const std::
     {
         char errorLog[1024];
         glGetShaderInfoLog(shader, 1024, nullptr, errorLog);
-        std::cout << "Shader Program linking error: \n" << errorLog << std::endl;
+        std::cout << "ERROR: Shader Program linking error: \n" << errorLog << std::endl;
         throw std::runtime_error("Oof");
     }
 
@@ -152,6 +158,7 @@ unsigned int make_shader_program(const std::string& vertex_filepath, const std::
         glDeleteShader(shaderModule);
     }
 
+    std::cout << "INFO: Shader program created successfully." << std::endl;
     return shader;
 }
 
