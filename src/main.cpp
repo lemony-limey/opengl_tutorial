@@ -47,12 +47,12 @@ int main()
 
     std::unique_ptr<triangle_mesh> triangle = std::make_unique<triangle_mesh>();
 
-    unsigned int shader;
+    unsigned int shader_program;
     try
     {
-        shader = make_shader_program(
-            "../src/shaders/vertex.txt",
-            "../src/shaders/fragment.txt"
+        shader_program = make_shader_program(
+            "../src/shaders/vertex.glsl",
+            "../src/shaders/fragment.glsl"
         );
     }
     catch (...)
@@ -68,14 +68,14 @@ int main()
 
         // glClear is a state-using function
         glClear(GL_COLOR_BUFFER_BIT);
-        glUseProgram(shader);
+        glUseProgram(shader_program);
         triangle->draw();
 
         glfwPollEvents();
         glfwSwapBuffers(window);
     }
 
-    glDeleteProgram(shader);
+    glDeleteProgram(shader_program);
     glfwTerminate();
     return 0;
 }

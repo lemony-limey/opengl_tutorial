@@ -14,9 +14,14 @@ public:
     ~triangle_mesh();
 
 private:
-    unsigned int m_VBO{};
+    // Pointers to buffers
     unsigned int m_VAO{};
+    unsigned int m_VBO{};
+    unsigned int m_index_buffer{};
+
+    // Additional info
     unsigned int m_vertex_count{};
+    unsigned int m_index_count{};
 };
 
 
