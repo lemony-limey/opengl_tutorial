@@ -3,6 +3,7 @@
 
 #include "config.hpp"
 #include "shader.hpp"
+#include "texture.hpp"
 #include "triangle_mesh.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -15,6 +16,7 @@ constexpr unsigned int SCREEN_HEIGHT = 600;
 // const could be instantiated at runtime or compile time.
 const std::string VERTEX_SHADER_PATH = "../src/shaders/vertex.glsl";
 const std::string FRAGMENT_SHADER_PATH = "../src/shaders/fragment.glsl";
+const std::string ASTLEY_TEXTURE_PATH = "../src/textures/astley.jpg";
 
 int main()
 {
@@ -54,12 +56,14 @@ int main()
     // glClearColor is a state-setting function
     glClearColor(0.25f, 0.5f, 0.75f, 1.0f);
 
-    std::unique_ptr<triangle_mesh> triangle = std::make_unique<triangle_mesh>();
-
     try
     {
-        // THROWS: a runtime exception if shader compilation and linking fails
-        shader current_shader(
+        // THROWS: a runtime error if the texture cannot be loaded
+        auto astley = std::make_shared<texture>(ASTLEY_TEXTURE_PATH);
+        const auto triangle = std::make_unique<triangle_mesh>(astley);
+
+        // THROWS: a runtime error if shader compilation and linking fails
+        const shader current_shader(
             VERTEX_SHADER_PATH,
             FRAGMENT_SHADER_PATH
         );

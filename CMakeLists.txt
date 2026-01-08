@@ -26,5 +26,3 @@ target_link_libraries(opengl_tutorial glfw)
 # Find OpenGL and link it
 find_package(OpenGL REQUIRED)
 target_link_libraries(opengl_tutorial OpenGL::GL)
-
-

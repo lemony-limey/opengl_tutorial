@@ -5,17 +5,24 @@
 #ifndef OPENGL_TUTORIAL_TEXTURE_HPP
 #define OPENGL_TUTORIAL_TEXTURE_HPP
 
-// This is the library for loading images.
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+
+#include <glad/glad.h>
+
+#include <string>
+
 
 class texture
 {
+public:
+    texture(const std::string& image_file);
+
+    unsigned int get_texture_location() const;
 private:
-    unsigned int m_height;
-    unsigned int m_number_of_channels;
-    unsigned int m_width;
-    unsigned int m_texture;
+    unsigned int m_texture = 0;
+
+    int m_height = 0;
+    int m_number_of_channels = 0;
+    int m_width = 0;
 };
 
 

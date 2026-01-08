@@ -3,11 +3,15 @@
 //
 
 #include "triangle_mesh.hpp"
+#include "texture.hpp"
+
 #include <vector>
 #include <glad/glad.h>
 
-triangle_mesh::triangle_mesh()
+triangle_mesh::triangle_mesh(const std::shared_ptr<texture>& current_texture)
 {
+    m_current_texture = current_texture;
+
     // Coordinates of each vertex and the colour at each vertex.
     std::vector<float> vertices = {
         // Positions ------   // Colours ------   // Texture coordinates
@@ -65,6 +69,7 @@ triangle_mesh::triangle_mesh()
 
 void triangle_mesh::draw() const
 {
+    glBindTexture(GL_TEXTURE_2D, m_current_texture->get_texture_location());
     glBindVertexArray(m_VAO);
     glDrawElements(GL_TRIANGLES, m_index_count, GL_UNSIGNED_INT, nullptr);
     // No need to unbind the VAO every time, but here is the code to do so if necessary:
