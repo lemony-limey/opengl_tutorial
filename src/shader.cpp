@@ -54,6 +54,9 @@ void shader::setFloat(const std::string& name, const float value) const
 
 // Takes a shader source file and compiles it into a shader module.
 // THROWS: runtime exception on failure.
+//
+// This functions is from:
+// https://www.youtube.com/watch?v=HdNaUwYc8_A
 unsigned int shader::make_shader_module(const std::string& filepath, unsigned int module_type)
 {
     std::ifstream file;
@@ -94,6 +97,9 @@ unsigned int shader::make_shader_module(const std::string& filepath, unsigned in
 
 // Links two shader modules together to create a shader program.
 // THROWS: runtime exception on failure.
+//
+// This function is from:
+// https://www.youtube.com/watch?v=HdNaUwYc8_A
 unsigned int shader::make_shader_program(const std::string& vertex_filepath, const std::string& fragment_filepath)
 {
     std::vector<unsigned int> modules;

@@ -40,6 +40,8 @@ private:
     unsigned int m_shader_program;
 
     // Helper functions for compiling the shader program.
+    // These functions are from:
+    // https://www.youtube.com/watch?v=HdNaUwYc8_A
     static unsigned int make_shader_module(const std::string& filepath, unsigned int module_type);
     static unsigned int make_shader_program(const std::string& vertex_filepath, const std::string& fragment_filepath);
 };

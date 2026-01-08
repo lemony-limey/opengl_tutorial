@@ -58,6 +58,7 @@ int main()
 
     try
     {
+        // THROWS: a runtime exception if shader compilation and linking fails
         shader current_shader(
             VERTEX_SHADER_PATH,
             FRAGMENT_SHADER_PATH
