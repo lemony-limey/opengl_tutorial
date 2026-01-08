@@ -18,6 +18,9 @@ texture::texture(const std::string& image_file)
     glGenTextures(1, &m_texture);
     glBindTexture(GL_TEXTURE_2D, m_texture);
 
+    // Flip the y-axis when loading the image so (0, 0) is at the bottom left.
+    stbi_set_flip_vertically_on_load(true);
+
     // Load the image data and generate the texture.
     unsigned char* data = stbi_load(
         image_file.c_str(),

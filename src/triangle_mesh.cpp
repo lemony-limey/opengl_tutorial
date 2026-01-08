@@ -15,9 +15,9 @@ triangle_mesh::triangle_mesh(const std::shared_ptr<texture>& current_texture)
     // Coordinates of each vertex and the colour at each vertex.
     std::vector<float> vertices = {
         // Positions ------   // Colours ------   // Texture coordinates
-        -0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f, // Bottom Left
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
-         0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 0.5f, // Top Centre
+        -0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.0f, 0.45f, // Bottom Left
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.45f, // Bottom Right
+         0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.0f, // Top Centre
     };
     m_vertex_count = vertices.size();
     // Vertices that constitute each triangle.
