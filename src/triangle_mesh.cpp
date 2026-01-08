@@ -10,10 +10,10 @@ triangle_mesh::triangle_mesh()
 {
     // Coordinates of each vertex and the colour at each vertex.
     std::vector<float> vertices = {
-        // Positions -----// Colours ------//
-        -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // Vertex 0 (x, y, z) & colour (r, g, b)
-         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-         0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
+        // Positions ------   // Colours ------   // Texture coordinates
+        -0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f, // Bottom Left
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+         0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 0.5f, // Top Centre
     };
     m_vertex_count = vertices.size();
     // Vertices that constitute each triangle.
@@ -36,13 +36,19 @@ triangle_mesh::triangle_mesh()
         GL_STATIC_DRAW
     );
 
+    // Define the positions of each component in the vertex buffer object.
     // Positions (x, y, z)
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 24, nullptr);
+    constexpr GLsizei stride = 8 * sizeof(float);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr);
     glEnableVertexAttribArray(0);
 
     // Colours (r, g, b)
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 24, reinterpret_cast<void *>(12));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    // Texture coordinates (u, v)
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
 
     // Perform the same for the indices

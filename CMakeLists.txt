@@ -11,6 +11,9 @@ add_executable(opengl_tutorial
         src/triangle_mesh.hpp
         src/shader.cpp
         src/shader.hpp
+        src/stb_image.h
+        src/texture.cpp
+        src/texture.hpp
 )
 
 # The executable needs the stuff in the "dependencies" directory
@@ -23,3 +26,5 @@ target_link_libraries(opengl_tutorial glfw)
 # Find OpenGL and link it
 find_package(OpenGL REQUIRED)
 target_link_libraries(opengl_tutorial OpenGL::GL)
+
+
