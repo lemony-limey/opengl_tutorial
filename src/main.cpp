@@ -2,15 +2,19 @@
 #include <memory>
 
 #include "config.hpp"
+#include "shader.hpp"
 #include "triangle_mesh.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-unsigned int make_shader_module(const std::string& filepath, unsigned int module_type);
-unsigned int make_shader_program(const std::string& vertex_filepath, const std::string& fragment_filepath);
 void processInput(GLFWwindow* window);
 
-const unsigned int SCREEN_WIDTH = 800;
-const unsigned int SCREEN_HEIGHT = 600;
+// constexpr is instantiated at compile time.
+constexpr unsigned int SCREEN_WIDTH  = 800;
+constexpr unsigned int SCREEN_HEIGHT = 600;
+
+// const could be instantiated at runtime or compile time.
+const std::string VERTEX_SHADER_PATH = "../src/shaders/vertex.glsl";
+const std::string FRAGMENT_SHADER_PATH = "../src/shaders/fragment.glsl";
 
 int main()
 {
@@ -40,6 +44,11 @@ int main()
         return 1;
     }
 
+    // Print the number of vertex attributes OpenGL allows
+    int number_of_attributes;
+    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &number_of_attributes);
+    std::cout << "Maximum number of vertex attributes supported: " << number_of_attributes << std::endl;
+
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // glClearColor is a state-setting function
@@ -47,37 +56,35 @@ int main()
 
     std::unique_ptr<triangle_mesh> triangle = std::make_unique<triangle_mesh>();
 
-    unsigned int shader_program;
     try
     {
-        shader_program = make_shader_program(
-            "../src/shaders/vertex.glsl",
-            "../src/shaders/fragment.glsl"
+        shader current_shader(
+            VERTEX_SHADER_PATH,
+            FRAGMENT_SHADER_PATH
         );
+
+        // Render loop
+        while (!glfwWindowShouldClose(window))
+        {
+            processInput(window);
+
+            // glClear is a state-using function
+            glClear(GL_COLOR_BUFFER_BIT);
+            current_shader.use();
+            triangle->draw();
+
+            glfwPollEvents();
+            glfwSwapBuffers(window);
+        }
+
+        glfwTerminate();
+        return 0;
     }
     catch (...)
     {
-        std::cout << "An exception occurred when creating the shader program" << std::endl;
+        std::cerr << "Oof" << std::endl;
         return 1;
     }
-
-    // Render loop
-    while (!glfwWindowShouldClose(window))
-    {
-        processInput(window);
-
-        // glClear is a state-using function
-        glClear(GL_COLOR_BUFFER_BIT);
-        glUseProgram(shader_program);
-        triangle->draw();
-
-        glfwPollEvents();
-        glfwSwapBuffers(window);
-    }
-
-    glDeleteProgram(shader_program);
-    glfwTerminate();
-    return 0;
 }
 
 
@@ -85,81 +92,6 @@ int main()
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
-}
-
-
-// Takes a shader source file and compiles it into a shader module.
-unsigned int make_shader_module(const std::string& filepath, unsigned int module_type)
-{
-    std::ifstream file;
-    std::stringstream bufferedLines;
-    std::string line;
-
-    // Open the file and collect its contents line-by-line into bufferedLines.
-    file.open(filepath);
-    while (std::getline(file, line))
-    {
-        bufferedLines << line << '\n';
-    }
-    std::string shaderSource = bufferedLines.str();
-    const char* shaderSrc = shaderSource.c_str();
-    bufferedLines.str("");
-    file.close();
-
-    // Compile the shader module.
-    unsigned int shaderModule = glCreateShader(module_type);
-    glShaderSource(shaderModule, 1, &shaderSrc, nullptr);
-    glCompileShader(shaderModule);
-
-    // Check for success
-    int success;
-    glGetShaderiv(shaderModule, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        char errorLog[1024];
-        glGetShaderInfoLog(shaderModule, 1024, nullptr, errorLog);
-        std::cout << "ERROR: Shader Module compilation error: \n" << errorLog << std::endl;
-        throw std::runtime_error("Oof");
-    }
-
-    return shaderModule;
-}
-
-
-// Links two shader modules together to create a shader program.
-unsigned int make_shader_program(const std::string& vertex_filepath, const std::string& fragment_filepath)
-{
-    std::vector<unsigned int> modules;
-    modules.push_back(make_shader_module(vertex_filepath, GL_VERTEX_SHADER));
-    modules.push_back(make_shader_module(fragment_filepath, GL_FRAGMENT_SHADER));
-
-    // Create necessary modules and link them
-    unsigned int shader = glCreateProgram();
-    for (unsigned int shaderModule : modules)
-    {
-        glAttachShader(shader, shaderModule);
-    }
-    glLinkProgram(shader);
-
-    // Check for success
-    int success;
-    glGetProgramiv(shader, GL_LINK_STATUS, &success);
-    if (!success)
-    {
-        char errorLog[1024];
-        glGetShaderInfoLog(shader, 1024, nullptr, errorLog);
-        std::cout << "ERROR: Shader Program linking error: \n" << errorLog << std::endl;
-        throw std::runtime_error("Oof");
-    }
-
-    // Modules can be deleted once the shader program is linked.
-    for (unsigned int shaderModule : modules)
-    {
-        glDeleteShader(shaderModule);
-    }
-
-    std::cout << "INFO: Shader program created successfully." << std::endl;
-    return shader;
 }
 
 
@@ -171,5 +103,3 @@ void processInput(GLFWwindow* window)
         glfwSetWindowShouldClose(window, true);
     }
 }
-
-

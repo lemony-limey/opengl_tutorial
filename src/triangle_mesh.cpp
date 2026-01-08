@@ -10,6 +10,7 @@ triangle_mesh::triangle_mesh()
 {
     // Coordinates of each vertex and the colour at each vertex.
     std::vector<float> vertices = {
+        // Positions -----// Colours ------//
         -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // Vertex 0 (x, y, z) & colour (r, g, b)
          0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
          0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
